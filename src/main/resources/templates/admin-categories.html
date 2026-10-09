@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories | E-Commerce Admin</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav-wrap"><a class="brand" th:href="@{/admin}"><span class="brand-mark">e</span> E-commerce <span
+                    class="nav-user">/ Admin</span></a><button class="menu-toggle" data-menu-toggle
+                aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav-links" data-menu><a th:href="@{/admin}">Overview</a><a
+                    th:href="@{/admin/products}">Products</a><a th:href="@{/admin/categories}">Categories</a>
+                <form class="nav-form" th:action="@{/logout}" method="post"><button class="nav-logout"
+                        type="submit">Sign out</button></form>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="page-intro">
+            <div><span class="eyebrow">Catalog structure</span>
+                <h1>Categories.</h1>
+                <p class="lede">Give customers a clear, calm way to browse the collection.</p>
+            </div><a class="button button-ghost" th:href="@{/admin}">Back to overview</a>
+        </div>
+        <div class="admin-grid">
+            <section class="surface form-card">
+                <h2>Create a category</h2>
+                <p class="muted">Use simple names customers will recognize.</p>
+                <form class="form-stack" th:action="@{/admin/categories/save}" method="post"><label for="name">Category
+                        name</label><input id="name" type="text" name="name" placeholder="e.g. Home & Living"
+                        required /><label for="description">Description</label><textarea id="description"
+                        name="description" placeholder="What belongs here?" required></textarea><button
+                        class="button button-primary" type="submit">Create category <span
+                            aria-hidden="true">&#8594;</span></button></form>
+            </section>
+            <section class="surface form-card">
+                <div class="section-heading">
+                    <div>
+                        <h2>Current categories</h2>
+                        <p th:text="${#lists.size(categories)} + ' active categories'"></p>
+                    </div>
+                </div>
+                <div class="category-list">
+                    <article class="category-row" th:each="category : ${categories}">
+                        <div><span class="product-category">Category</span>
+                            <h3 th:text="${category.name}">Category name</h3>
+                            <p class="muted" th:text="${category.description}">Description</p>
+                        </div><span class="badge" th:text="${#lists.size(category.products)} + ' products'">0
+                            products</span>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="container footer-inner"><a class="footer-brand" th:href="@{/admin}">E-commerce / Admin</a><span
+                class="footer-copy">Shape the collection.</span>
+            <nav class="footer-links"><a th:href="@{/admin}">Overview</a><a th:href="@{/admin/products}">Products</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+
+</html>

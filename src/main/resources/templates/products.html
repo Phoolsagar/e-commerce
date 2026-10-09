@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav-wrap"><a class="brand" th:href="@{/}"><span class="brand-mark">e</span> E-commerce</a><button
+                class="menu-toggle" data-menu-toggle aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav-links" data-menu>
+                <th:block th:if="${isAdmin}"><a th:href="@{/admin}">Overview</a><a
+                        th:href="@{/admin/products}">Products</a><a th:href="@{/admin/categories}">Categories</a>
+                </th:block>
+                <th:block th:unless="${isAdmin}"><a th:href="@{/products}">Shop</a><a th:if="${currentUser != null}"
+                        th:href="@{/cart}">Cart</a><a th:if="${currentUser != null}" th:href="@{/orders}">Orders</a>
+                </th:block><span th:if="${currentUser != null}" class="nav-user"
+                    th:text="'Hi, ' + ${currentUser.firstName}"></span>
+                <form th:if="${currentUser != null}" class="nav-form" th:action="@{/logout}" method="post"><button
+                        class="nav-logout" type="submit">Sign out</button></form><a th:if="${currentUser == null}"
+                    class="nav-pill" th:href="@{/login}">Sign in</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-intro">
+            <div><span class="eyebrow">The collection</span>
+                <h1>Find your next favorite.</h1>
+                <p class="lede">Useful pieces, considered details, and a little joy in every category.</p>
+            </div><a class="button button-dark" th:href="@{/cart}">View cart <span aria-hidden="true">&#8594;</span></a>
+        </div>
+        <div th:if="${successMessage}" class="alert alert-success toast" th:text="${successMessage}"></div>
+
+        <div class="filters">
+            <form class="filter-form" method="get" th:action="@{/products}">
+                <input name="keyword" th:value="${keyword}" placeholder="Search by product name..." />
+                <select name="categoryId">
+                    <option value="">All Categories</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
+                        th:selected="${category.id == selectedCategoryId}">
+                    </option>
+                </select>
+                <button class="button button-primary" type="submit">Apply filters</button>
+            </form>
+        </div>
+
+        <div class="product-grid" th:if="${products.hasContent()}">
+            <article class="product-card" th:each="product : ${products}">
+                <a th:href="@{'/product/' + ${product.id}}"><img class="product-image" th:src="${product.imageUrl}"
+                        alt="Product image" /></a>
+                <div class="product-body">
+                    <span class="product-category" th:text="${product.category.name}">Category</span>
+                    <h3 th:text="${product.name}">Product Name</h3>
+                    <p class="product-description" th:text="${product.description}">Description</p>
+                    <div class="product-footer"><span class="price"
+                            th:text="'₹' + ${#numbers.formatDecimal(product.price, 1, 2)}">₹0.00</span>
+                        <form th:action="@{'/cart/add/' + ${product.id}}" method="post">
+                            <input type="hidden" name="quantity" value="1" />
+                            <button class="button button-primary button-small" type="submit">Add to cart</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <nav class="catalog-pagination" th:if="${products.totalPages > 1}" aria-label="Product pages">
+            <a class="button button-ghost button-small" th:if="${products.hasPrevious()}"
+                th:href="@{/products(page=${products.number - 1}, keyword=${keyword}, categoryId=${selectedCategoryId})}">Previous</a>
+            <span class="pagination-label"
+                th:text="'Page ' + ${products.number + 1} + ' of ' + ${products.totalPages}">Page 1 of 1</span>
+            <a class="button button-primary button-small" th:if="${products.hasNext()}"
+                th:href="@{/products(page=${products.number + 1}, keyword=${keyword}, categoryId=${selectedCategoryId})}">Next</a>
+        </nav>
+        <div class="empty-state" th:if="${!products.hasContent()}">
+            <h3>No products found</h3>
+            <p class="muted">Try a different search or category.</p><a class="button button-dark"
+                th:href="@{/products}">Clear filters</a>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="container footer-inner"><a class="footer-brand" th:href="@{/}">E-commerce</a><span
+                class="footer-copy">Thoughtful goods, simply delivered.</span>
+            <nav class="footer-links"><a th:href="@{/products}">Shop</a><a th:href="@{/cart}">Cart</a><a
+                    th:href="@{/orders}">Orders</a></nav>
+        </div>
+    </footer>
+</body>
+
+</html>

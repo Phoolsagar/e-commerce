@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav-wrap"><a class="brand" th:href="@{/}"><span class="brand-mark">e</span> E-commerce</a><button
+                class="menu-toggle" data-menu-toggle aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav-links" data-menu>
+                <th:block th:if="${isAdmin}"><a th:href="@{/admin}">Overview</a><a
+                        th:href="@{/admin/products}">Products</a><a th:href="@{/admin/categories}">Categories</a>
+                </th:block>
+                <th:block th:unless="${isAdmin}"><a th:href="@{/products}">Shop</a><a th:if="${currentUser != null}"
+                        th:href="@{/cart}">Cart</a><a th:if="${currentUser != null}" th:href="@{/orders}">Orders</a>
+                </th:block><span th:if="${currentUser != null}" class="nav-user"
+                    th:text="'Hi, ' + ${currentUser.firstName}"></span>
+                <form th:if="${currentUser != null}" class="nav-form" th:action="@{/logout}" method="post"><button
+                        class="nav-logout" type="submit">Sign out</button></form><a th:if="${currentUser == null}"
+                    class="nav-pill" th:href="@{/login}">Sign in</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="page-intro">
+            <div><span class="eyebrow">Your selection</span>
+                <h1>Your cart.</h1>
+                <p class="lede">A few good things, almost ready to come home.</p>
+            </div><a class="button button-ghost" th:href="@{/products}">Continue shopping</a>
+        </div>
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+        <div class="cart-layout" th:if="${not #lists.isEmpty(cartItems)}">
+            <section class="surface cart-list">
+                <div class="section-heading">
+                    <div>
+                        <h2>Your items</h2>
+                        <p th:text="${#lists.size(cartItems)} + ' product(s)'"></p>
+                    </div>
+                </div>
+                <div class="cart-row" th:each="item : ${cartItems}">
+                    <img class="cart-thumb" th:src="${item.product.imageUrl}" alt="Product image" />
+                    <div>
+                        <h3 th:text="${item.product.name}">Product</h3>
+                        <p th:text="'₹' + ${#numbers.formatDecimal(item.product.price, 1, 2)} + ' each'"></p>
+                    </div>
+                    <span class="price"
+                        th:text="'₹' + ${#numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">₹0.00</span>
+                    <form th:action="@{'/cart/update/' + ${item.product.id}}" method="post" class="quantity-form"><input
+                            type="number" name="quantity" th:value="${item.quantity}" min="1"
+                            aria-label="Quantity" /><button class="button button-ghost button-small"
+                            type="submit">Update</button><button class="remove-button"
+                            th:formaction="@{'/cart/remove/' + ${item.product.id}}" formmethod="post"
+                            type="submit">Remove</button></form>
+                </div>
+            </section>
+            <aside class="surface summary">
+                <h2>Order summary</h2>
+                <div class="summary-line"><span>Subtotal</span><strong
+                        th:text="'₹' + ${#numbers.formatDecimal(total, 1, 2)}"></strong></div>
+                <div class="summary-line"><span>Delivery</span><strong>Free</strong></div>
+                <div class="summary-line summary-total"><span>Total</span><strong
+                        th:text="'₹' + ${#numbers.formatDecimal(total, 1, 2)}"></strong>
+                </div>
+                <form th:action="@{/cart/checkout}" method="post">
+                    <div class="checkout-form"><label for="shippingAddress">Shipping address</label><input
+                            id="shippingAddress" type="text" name="shippingAddress"
+                            placeholder="Where should we send it?" required /><button class="button button-primary"
+                            type="submit">Place order <span aria-hidden="true">&#8594;</span></button></div>
+                </form>
+            </aside>
+        </div>
+        <div class="empty-state" th:if="${#lists.isEmpty(cartItems)}">
+            <h2>Your cart is waiting.</h2>
+            <p class="muted">Take a look around and add something you love.</p><a class="button button-primary"
+                th:href="@{/products}">Explore products</a>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="container footer-inner"><a class="footer-brand" th:href="@{/}">E-commerce</a><span
+                class="footer-copy">Thoughtful goods, simply delivered.</span>
+            <nav class="footer-links"><a th:href="@{/products}">Shop</a><a th:href="@{/orders}">Orders</a></nav>
+        </div>
+    </footer>
+</body>
+
+</html>

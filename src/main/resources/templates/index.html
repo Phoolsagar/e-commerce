@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" th:href="@{/}"><span class="brand-mark">e</span> E-Commerce</a>
+            <button class="menu-toggle" data-menu-toggle aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav-links" data-menu>
+                <th:block th:if="${isAdmin}"><a th:href="@{/admin}">Overview</a><a
+                        th:href="@{/admin/products}">Products</a><a th:href="@{/admin/categories}">Categories</a>
+                </th:block>
+                <th:block th:unless="${isAdmin}"><a th:href="@{/products}">Shop</a><a th:if="${currentUser != null}"
+                        th:href="@{/cart}">Cart</a><a th:if="${currentUser != null}" th:href="@{/orders}">Orders</a>
+                </th:block>
+                <span th:if="${currentUser != null}" class="nav-user"
+                    th:text="'Hi, ' + ${currentUser.firstName}"></span>
+                <form th:if="${currentUser != null}" class="nav-form" th:action="@{/logout}" method="post"><button
+                        class="nav-logout" type="submit">Sign out</button></form>
+                <a th:if="${currentUser == null}" class="nav-pill" th:href="@{/login}">Sign in</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow">Thoughtfully selected essentials</span>
+                    <h1>Good things for your everyday.</h1>
+                    <p class="lede">A considered collection of modern finds for work, home, and everywhere in between.
+                        Browse at your pace, choose what lasts.</p>
+                    <div class="hero-actions">
+                        <a class="button button-primary" th:href="@{/products}">Explore the collection <span
+                                aria-hidden="true">&#8594;</span></a>
+                        <a class="button button-ghost" th:href="@{/register}">Create an account</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&amp;fit=crop&amp;w=1200&amp;q=85"
+                        alt="Minimal smartwatch resting on a warm surface" />
+                    <div class="hero-sticker"><strong>Small details, big difference.</strong> Everyday objects with a
+                        little more thought in them.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <div><span class="eyebrow">Why shop here</span>
+                        <h2>Made to feel easy.</h2>
+                    </div>
+                    <p>From first click to front door.</p>
+                </div>
+                <div class="feature-grid">
+                    <article class="feature">
+                        <h3>Curated catalog</h3>
+                        <p>Find useful, well-loved categories without the endless scroll.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Simple checkout</h3>
+                        <p>Keep your basket organized and place your order in a few calm steps.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Order visibility</h3>
+                        <p>See your purchases and delivery status whenever you need them.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="container footer-inner"><a class="footer-brand" th:href="@{/}">E-commerce</a><span
+                class="footer-copy">Thoughtful goods, simply delivered.</span>
+            <nav class="footer-links"><a th:href="@{/products}">Shop</a><a th:href="@{/register}">Create account</a><a
+                    th:href="@{/login}">Sign in</a></nav>
+        </div>
+    </footer>
+</body>
+
+</html>

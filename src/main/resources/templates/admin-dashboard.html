@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav-wrap"><a class="brand" th:href="@{/admin}"><span class="brand-mark">e</span> E-commerce <span
+                    class="nav-user">/ Admin</span></a><button class="menu-toggle" data-menu-toggle
+                aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav-links" data-menu><a th:href="@{/admin}">Overview</a><a
+                    th:href="@{/admin/products}">Products</a><a th:href="@{/admin/categories}">Categories</a>
+                <form class="nav-form" th:action="@{/logout}" method="post"><button class="nav-logout"
+                        type="submit">Sign out</button></form>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="page-intro">
+            <div><span class="eyebrow">Store operations</span>
+                <h1>Admin dashboard.</h1>
+                <p class="lede">Keep the catalog fresh and every order moving.</p>
+            </div>
+            <div><a class="button button-ghost" th:href="@{/admin/categories}">Manage categories</a> <a
+                    class="button button-primary" th:href="@{/admin/products}">Manage products <span
+                        aria-hidden="true">&#8594;</span></a></div>
+        </div>
+
+        <section class="surface admin-orders-panel">
+            <div class="section-heading orders-heading" style="padding: 24px 24px 0;">
+                <div><span class="eyebrow">Fulfillment</span>
+                    <h2>Recent orders</h2>
+                    <p>Update fulfillment status at a glance.</p>
+                </div><span class="panel-note">New orders come from checkout</span>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table order-table">
+                    <colgroup>
+                        <col class="order-id-col" />
+                        <col class="order-user-col" />
+                        <col class="order-total-col" />
+                        <col class="order-status-col" />
+                        <col class="order-update-col" />
+                        <col class="order-delete-col" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td th:text="${order.id}">1</td>
+                            <td th:text="${order.user.email}">user@test.com</td>
+                            <td th:text="'₹' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">₹0.00</td>
+                            <td><span class="badge" th:classappend="${'badge-' + #strings.toLowerCase(order.status)}"
+                                    th:text="${order.status}">PENDING</span></td>
+                            <td>
+                                <form class="order-actions" th:action="@{'/admin/orders/' + ${order.id} + '/status'}"
+                                    method="post">
+                                    <span class="select-control status-editor"
+                                        th:classappend="${'status-' + #strings.toLowerCase(order.status)}"><span
+                                            class="status-dot"></span><select name="status"
+                                            aria-label="Update order status">
+                                            <option value="PENDING" th:selected="${order.status == 'PENDING'}">PENDING
+                                            </option>
+                                            <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">SHIPPED
+                                            </option>
+                                            <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">
+                                                DELIVERED</option>
+                                        </select></span>
+                                    <button class="button button-primary button-small" type="submit">Save</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form th:action="@{'/admin/orders/' + ${order.id} + '/delete'}" method="post"><button
+                                        class="button button-ghost button-small" type="submit">Delete</button></form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="container footer-inner"><a class="footer-brand" th:href="@{/admin}">E-commerce / Admin</a><span
+                class="footer-copy">Keep the collection moving.</span>
+            <nav class="footer-links"><a th:href="@{/admin/products}">Products</a><a
+                    th:href="@{/admin/categories}">Categories</a></nav>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav-wrap"><a class="brand" th:href="@{/}"><span class="brand-mark">e</span> E-commerce</a><button
+                class="menu-toggle" data-menu-toggle aria-label="Open menu" aria-expanded="false">&#9776;</button>
+            <nav class="nav-links" data-menu>
+                <th:block th:if="${isAdmin}"><a th:href="@{/admin}">Overview</a><a
+                        th:href="@{/admin/products}">Products</a><a th:href="@{/admin/categories}">Categories</a>
+                </th:block>
+                <th:block th:unless="${isAdmin}"><a th:href="@{/products}">Shop</a><a th:if="${currentUser != null}"
+                        th:href="@{/cart}">Cart</a><a th:if="${currentUser != null}" th:href="@{/orders}">Orders</a>
+                </th:block><span th:if="${currentUser != null}" class="nav-user"
+                    th:text="'Hi, ' + ${currentUser.firstName}"></span>
+                <form th:if="${currentUser != null}" class="nav-form" th:action="@{/logout}" method="post"><button
+                        class="nav-logout" type="submit">Sign out</button></form><a th:if="${currentUser == null}"
+                    class="nav-pill" th:href="@{/login}">Sign in</a>
+            </nav>
+        </div>
+    </header>
+    <main class="detail-shell">
+        <div class="container detail-grid">
+            <img class="detail-image" th:src="${product.imageUrl}" alt="Product image" />
+            <div class="detail-copy">
+                <a class="eyebrow" th:href="@{/products}">Back to collection</a>
+                <h1 th:text="${product.name}">Product</h1>
+                <span class="product-category" th:text="${product.category.name}">Category</span>
+                <div class="price" th:text="'₹' + ${#numbers.formatDecimal(product.price, 1, 2)}">₹0.00</div>
+                <p th:text="${product.description}">Description</p>
+                <div class="detail-meta">
+                    <div><strong>In stock</strong><span th:text="${product.stock} + ' available'"></span></div>
+                    <div><strong>Easy checkout</strong><span>Secure and simple</span></div>
+                </div>
+                <form th:action="@{'/cart/add/' + ${product.id}}" method="post">
+                    <input type="hidden" name="quantity" value="1" />
+                    <button class="button button-primary" type="submit">Add to cart <span
+                            aria-hidden="true">&#8594;</span></button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="container footer-inner"><a class="footer-brand" th:href="@{/}">E-commerce</a><span
+                class="footer-copy">Thoughtful goods, simply delivered.</span>
+            <nav class="footer-links"><a th:href="@{/products}">Shop</a><a th:href="@{/cart}">Cart</a><a
+                    th:href="@{/orders}">Orders</a></nav>
+        </div>
+    </footer>
+</body>
+
+</html>

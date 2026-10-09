@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+
+<body class="auth-page">
+    <main class="auth-card">
+        <a class="brand" th:href="@{/}"><span class="brand-mark">e</span> E-commerce</a>
+        <span class="eyebrow">Start exploring</span>
+        <h1>Your next favorite is out there.</h1>
+        <p class="lede">Create an account to save your cart and keep every order in one place.</p>
+
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <form class="form-stack" th:action="@{/register}" th:object="${user}" method="post">
+            <label for="firstName">First name</label><input id="firstName" type="text" th:field="*{firstName}"
+                placeholder="First name" required />
+            <label for="lastName">Last name</label><input id="lastName" type="text" th:field="*{lastName}"
+                placeholder="Last name" required />
+            <label for="email">Email address</label><input id="email" type="email" th:field="*{email}"
+                placeholder="you@example.com" required />
+            <label for="password">Password</label><input id="password" type="password" th:field="*{password}"
+                placeholder="Create a password" required />
+            <button class="button button-primary" type="submit">Create account <span
+                    aria-hidden="true">&#8594;</span></button>
+        </form>
+
+        <p class="auth-foot">Already have an account? <a th:href="@{/login}">Sign in</a></p>
+    </main>
+</body>
+
+</html>
